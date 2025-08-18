@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/neutral_100"
+    app:cardBackgroundColor="@color/background_card"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp">
+
+        <!-- 左侧优先级指示器 -->
+        <View
+            android:id="@+id/priority_indicator"
+            android:layout_width="6dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:background="@color/priority_medium" />
+
+        <!-- 主要内容 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- 标题和状态 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/event_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="事件标题"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/event_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="待处理"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/status_pending"
+                    android:background="@drawable/bg_status_pending"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp" />
+
+            </LinearLayout>
+
+            <!-- 描述 -->
+            <TextView
+                android:id="@+id/event_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="事件描述"
+                android:textSize="15sp"
+                android:textColor="@color/text_secondary"
+                android:lineSpacingExtra="2dp"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:visibility="gone" />
+
+            <!-- 时间信息 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- 预计时间 -->
+                <LinearLayout
+                    android:id="@+id/estimated_time_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="预计: "
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/estimated_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0min"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+
+                </LinearLayout>
+
+                <!-- 实际时间 -->
+                <LinearLayout
+                    android:id="@+id/actual_time_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="实际: "
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/actual_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0min"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <!-- 截止日期 -->
+                <TextView
+                    android:id="@+id/due_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="今天"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!-- 状态变更按钮区域 -->
+            <LinearLayout
+                android:id="@+id/status_buttons_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_status_1"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:text="进行中"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:backgroundTint="@color/primary_light"
+                    android:textColor="@color/primary"
+                    app:strokeColor="@color/primary"
+                    app:strokeWidth="1.5dp"
+                    app:cornerRadius="12dp"
+                    android:elevation="2dp"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_status_2"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:text="完成"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:backgroundTint="@color/secondary_light"
+                    android:textColor="@color/secondary"
+                    app:strokeColor="@color/secondary"
+                    app:strokeWidth="1.5dp"
+                    app:cornerRadius="12dp"
+                    android:elevation="2dp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- 右侧操作区域 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <!-- 拖拽手柄 -->
+            <ImageView
+                android:id="@+id/drag_handle"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/ic_drag_handle"
+                android:alpha="0.6"
+                android:contentDescription="拖拽排序" />
+
+            <!-- 优先级标签 -->
+            <TextView
+                android:id="@+id/priority_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="中"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="@color/priority_medium"
+                android:background="@drawable/rounded_priority_background"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp" />
+
+            <!-- 编辑按钮 -->
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_edit"
+                android:alpha="0.7"
+                android:contentDescription="编辑事件" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

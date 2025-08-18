@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Kanban 任务管理</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Kanban Board</string>
+    <string name="nav_header_subtitle">任务管理系统</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    
+    <!-- Kanban specific strings -->
+    <string name="add_task">添加任务</string>
+    <string name="task_title_hint">任务标题</string>
+    <string name="task_description_hint">任务描述（可选）</string>
+    <string name="priority">优先级</string>
+    <string name="estimated_hours">预计工时（小时）</string>
+    <string name="create">创建</string>
+    <string name="cancel">取消</string>
+    <string name="edit">编辑</string>
+    <string name="delete">删除</string>
+    <string name="close">关闭</string>
+    <string name="move_to">移动到</string>
+    <string name="time_tracking">时间跟踪</string>
+    <string name="start_tracking">开始计时</string>
+    <string name="stop_tracking">停止计时</string>
+    <string name="estimated_time">预计时间</string>
+    <string name="actual_time">实际时间</string>
+    <string name="hours_format">%1$.1f 小时</string>
+    <string name="working_on_task">正在进行：%1$s</string>
+    <string name="confirm_delete">确认删除</string>
+    <string name="confirm_delete_message">确定要删除任务 "%1$s" 吗？此操作不可撤销。</string>
+</resources>

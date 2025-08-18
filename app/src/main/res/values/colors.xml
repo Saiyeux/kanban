@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Legacy Material Colors for Theme Compatibility -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    
+    <!-- Material 3 Primary Colors -->
+    <color name="primary">#FF6366F1</color>
+    <color name="primary_variant">#FF4F46E5</color>
+    <color name="primary_light">#FFEDE9FE</color>
+    <color name="secondary">#FF10B981</color>
+    <color name="secondary_light">#FFD1FAE5</color>
+    
+    <!-- Background Colors -->
+    <color name="background_primary">#FFF8FAFC</color>
+    <color name="background_secondary">#FFFFFFFF</color>
+    <color name="background_surface">#FFFEFEFE</color>
+    <color name="background_card">#FFFFFFFF</color>
+    
+    <!-- Sidebar & Toolbar -->
+    <color name="sidebar_background">#FFFFFFFF</color>
+    <color name="main_background">#FFF8FAFC</color>
+    <color name="toolbar_background">#FFFFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FF0F172A</color>
+    <color name="text_secondary">#FF64748B</color>
+    <color name="text_tertiary">#FF94A3B8</color>
+    <color name="text_on_primary">#FFFFFFFF</color>
+    
+    <!-- Status Colors (Modern Palette) -->
+    <color name="status_pending">#FFF59E0B</color>      <!-- Amber -->
+    <color name="status_in_progress">#FF3B82F6</color>  <!-- Blue -->
+    <color name="status_completed">#FF10B981</color>    <!-- Emerald -->
+    <color name="status_cancelled">#FF6B7280</color>    <!-- Gray -->
+    
+    <!-- Priority Colors (Enhanced) -->
+    <color name="priority_low">#FF10B981</color>       <!-- Emerald -->
+    <color name="priority_medium">#FFF59E0B</color>     <!-- Amber -->
+    <color name="priority_high">#FFEF4444</color>      <!-- Red -->
+    <color name="priority_urgent">#FF8B5CF6</color>     <!-- Purple -->
+    
+    <!-- Accent Colors -->
+    <color name="accent_blue">#FF3B82F6</color>
+    <color name="accent_green">#FF10B981</color>
+    <color name="accent_purple">#FF8B5CF6</color>
+    <color name="accent_pink">#FFEC4899</color>
+    
+    <!-- Neutral Colors -->
+    <color name="neutral_50">#FFF8FAFC</color>
+    <color name="neutral_100">#FFF1F5F9</color>
+    <color name="neutral_200">#FFE2E8F0</color>
+    <color name="neutral_300">#FFCBD5E1</color>
+    <color name="neutral_400">#FF94A3B8</color>
+    <color name="neutral_500">#FF64748B</color>
+    <color name="neutral_600">#FF475569</color>
+    <color name="neutral_700">#FF334155</color>
+    <color name="neutral_800">#FF1E293B</color>
+    <color name="neutral_900">#FF0F172A</color>
+    
+    <!-- Legacy Support -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
