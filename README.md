@@ -2,6 +2,8 @@
 
 一个现代化的Android看板任务管理应用，采用Material Design 3设计风格。
 
+<img width="571" height="882" alt="image" src="https://github.com/user-attachments/assets/5e8066e8-23d0-4499-8060-91ce0087a377" />
+
 ## ✨ 功能特性
 
 ### 📋 任务管理
