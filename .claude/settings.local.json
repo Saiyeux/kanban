@@ -5,7 +5,10 @@
       "Bash(adb logcat:*)",
       "Bash(rm:*)",
       "Bash(java:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(cp:*)",
+      "Bash(grep:*)",
+      "Bash(convert:*)"
     ],
     "deny": [],
     "ask": []

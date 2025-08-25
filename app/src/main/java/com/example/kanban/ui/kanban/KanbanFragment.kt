@@ -35,6 +35,7 @@ import java.time.LocalDateTime
 import java.time.LocalDate
 import java.util.*
 import kotlin.math.abs
+import androidx.core.graphics.toColorInt
 
 class KanbanFragment : Fragment() {
 
@@ -132,7 +133,7 @@ class KanbanFragment : Fragment() {
     private fun initDeleteZone() {
         // 创建删除区域视图
         deleteZone = FrameLayout(requireContext()).apply {
-            setBackgroundColor(android.graphics.Color.RED)
+            setBackgroundColor("#B22222".toColorInt())
             alpha = 0.8f
             visibility = View.GONE
             
@@ -269,8 +270,8 @@ class KanbanFragment : Fragment() {
                     highlightDeleteZone()
                 },
                 onDeleteZoneExited = {
-                    // 重置删除区域样式
-                    resetDeleteZone()
+                    // 隐藏删除区域
+                    hideDeleteZone()
                 },
                 onItemDeleted = { position ->
                     // 拖拽到删除区域删除事件
