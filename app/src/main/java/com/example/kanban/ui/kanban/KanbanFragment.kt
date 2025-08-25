@@ -72,6 +72,10 @@ class KanbanFragment : Fragment() {
     private var isSidebarVisible = false
     private var sidebarWidth = 0
     private var currentAnimator: ValueAnimator? = null
+    
+    // 删除区域
+    private lateinit var deleteZone: View
+    private var isDeleteZoneVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -119,7 +123,42 @@ class KanbanFragment : Fragment() {
         val density = resources.displayMetrics.density
         sidebarWidth = (280 * density).toInt()
         
+        // 初始化删除区域
+        initDeleteZone()
+        
         setupGestureDetection()
+    }
+
+    private fun initDeleteZone() {
+        // 创建删除区域视图
+        deleteZone = FrameLayout(requireContext()).apply {
+            setBackgroundColor(android.graphics.Color.RED)
+            alpha = 0.8f
+            visibility = View.GONE
+            
+            // 添加删除区域的提示文本
+            val textView = TextView(context).apply {
+                text = "拖拽到此处删除"
+                setTextColor(android.graphics.Color.WHITE)
+                textSize = 16f
+                gravity = android.view.Gravity.CENTER
+                setTypeface(null, android.graphics.Typeface.BOLD)
+            }
+            
+            // 将文本视图添加到删除区域
+            addView(textView, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            ))
+        }
+        
+        // 将删除区域添加到主容器
+        mainContainer.addView(deleteZone, FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            resources.getDimension(R.dimen.delete_zone_height).toInt()
+        ).apply {
+            gravity = android.view.Gravity.BOTTOM
+        })
     }
 
     private fun setupGestureDetection() {
@@ -185,6 +224,10 @@ class KanbanFragment : Fragment() {
             onEventDelete = { event ->
                 showDeleteEventDialog(event)
             },
+            onEventLongClick = { event ->
+                // 长按事件显示删除区域
+                showDeleteZone()
+            },
             onEventStatusChange = { event, newStatus, timeSpent ->
                 val updatedEvent = event.copy(
                     status = newStatus,
@@ -216,6 +259,21 @@ class KanbanFragment : Fragment() {
                 },
                 onItemDismiss = { position ->
                     // 滑动删除事件
+                    eventAdapter.getItemAt(position)?.let { event ->
+                        showDeleteEventDialog(event)
+                    }
+                },
+                onDeleteZoneEntered = {
+                    // 显示删除区域并高亮
+                    showDeleteZone()
+                    highlightDeleteZone()
+                },
+                onDeleteZoneExited = {
+                    // 重置删除区域样式
+                    resetDeleteZone()
+                },
+                onItemDeleted = { position ->
+                    // 拖拽到删除区域删除事件
                     eventAdapter.getItemAt(position)?.let { event ->
                         showDeleteEventDialog(event)
                     }
@@ -318,6 +376,64 @@ class KanbanFragment : Fragment() {
             
             start()
         }
+    }
+
+    private fun showDeleteZone() {
+        if (isDeleteZoneVisible) return
+        
+        isDeleteZoneVisible = true
+        deleteZone.visibility = View.VISIBLE
+        
+        // 添加动画效果
+        deleteZone.scaleY = 0.5f
+        deleteZone.alpha = 0f
+        deleteZone.animate()
+            .alpha(1f)
+            .scaleY(1f)
+            .setDuration(200)
+            .start()
+    }
+    
+    private fun hideDeleteZone() {
+        if (!isDeleteZoneVisible) return
+        
+        isDeleteZoneVisible = false
+        
+        // 添加动画效果
+        deleteZone.animate()
+            .alpha(0f)
+            .scaleY(0.5f)
+            .setDuration(200)
+            .withEndAction {
+                deleteZone.visibility = View.GONE
+            }
+            .start()
+    }
+    
+    private fun highlightDeleteZone() {
+        // 高亮删除区域表示可以删除
+        deleteZone.animate()
+            .scaleX(1.1f)
+            .scaleY(1.1f)
+            .setDuration(100)
+            .withEndAction {
+                deleteZone.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(100)
+                    .start()
+            }
+            .start()
+    }
+    
+    private fun resetDeleteZone() {
+        // 重置删除区域样式
+        deleteZone.animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .alpha(1f)
+            .setDuration(100)
+            .start()
     }
 
     private fun observeData() {

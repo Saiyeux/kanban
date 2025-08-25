@@ -22,6 +22,7 @@ class EventAdapter(
     private val onEventClick: (Event) -> Unit,
     private val onEventEdit: (Event) -> Unit = {},
     private val onEventDelete: (Event) -> Unit = {},
+    private val onEventLongClick: (Event) -> Unit = {},
     private val onEventStatusChange: (Event, EventStatus, Double) -> Unit = { _, _, _ -> }
 ) : ListAdapter<Event, EventAdapter.EventViewHolder>(EventDiffCallback()) {
     
@@ -44,7 +45,7 @@ class EventAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_event, parent, false)
-        return EventViewHolder(view, onEventClick, onEventEdit, onEventDelete, onEventStatusChange)
+        return EventViewHolder(view, onEventClick, onEventEdit, onEventDelete, onEventLongClick, onEventStatusChange)
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
@@ -61,6 +62,7 @@ class EventAdapter(
         private val onEventClick: (Event) -> Unit,
         private val onEventEdit: (Event) -> Unit,
         private val onEventDelete: (Event) -> Unit,
+        private val onEventLongClick: (Event) -> Unit,
         private val onEventStatusChange: (Event, EventStatus, Double) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         
@@ -121,11 +123,15 @@ class EventAdapter(
                 onToggleExpand(event.id)
             }
             
+            // 长按事件 - 显示删除区域
+            itemView.setOnLongClickListener {
+                onEventLongClick(event)
+                true
+            }
+            
             // 设置状态按钮的可见性和点击事件
             setupStatusButtons(event, isExpanded)
 
-            // Long press functionality removed to prevent unwanted dialogs
-            
             // 编辑按钮点击事件
             editButton.setOnClickListener {
                 onEventEdit(event)
