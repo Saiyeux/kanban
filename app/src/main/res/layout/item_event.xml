@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="6dp"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/neutral_100"
     app:cardBackgroundColor="@color/background_card"
@@ -16,102 +16,129 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="20dp">
+        android:padding="8dp">
 
         <!-- 左侧优先级指示器 -->
         <View
             android:id="@+id/priority_indicator"
-            android:layout_width="6dp"
+            android:layout_width="3dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:background="@color/priority_medium" />
 
-        <!-- 主要内容 -->
+        <!-- 主要内容区域 - 2x3网格布局 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <!-- 标题和状态 -->
+            <!-- 第一行：标题 + 优先级 + 状态 + 编辑按钮 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
+                <!-- 标题 -->
                 <TextView
                     android:id="@+id/event_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="事件标题"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:fontFamily="sans-serif-medium"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:ellipsize="end" />
 
+                <!-- 优先级标签 -->
+                <TextView
+                    android:id="@+id/priority_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:text="中"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/priority_medium"
+                    android:background="@drawable/rounded_priority_background"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="2dp" />
+
+                <!-- 状态 -->
                 <TextView
                     android:id="@+id/event_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="6dp"
                     android:text="待处理"
-                    android:textSize="13sp"
+                    android:textSize="10sp"
                     android:textStyle="bold"
                     android:textColor="@color/status_pending"
                     android:background="@drawable/bg_status_pending"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp" />
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="3dp" />
+
+                <!-- 编辑按钮 -->
+                <ImageButton
+                    android:id="@+id/edit_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_edit"
+                    android:alpha="0.7"
+                    android:contentDescription="编辑事件" />
 
             </LinearLayout>
 
-            <!-- 描述 -->
-            <TextView
-                android:id="@+id/event_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="事件描述"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:lineSpacingExtra="2dp"
-                android:maxLines="3"
-                android:ellipsize="end"
-                android:visibility="gone" />
-
-            <!-- 时间信息 -->
+            <!-- 第二行：简介 + 时间信息 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
+
+                <!-- 简介 -->
+                <TextView
+                    android:id="@+id/event_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="事件简介"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:visibility="visible" />
 
                 <!-- 预计时间 -->
                 <LinearLayout
                     android:id="@+id/estimated_time_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="预计: "
-                        android:textSize="12sp"
+                        android:text="预计:"
+                        android:textSize="10sp"
                         android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:id="@+id/estimated_duration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
                         android:text="0min"
-                        android:textSize="12sp"
+                        android:textSize="10sp"
                         android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
@@ -121,42 +148,39 @@
                     android:id="@+id/actual_time_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="实际: "
-                        android:textSize="12sp"
+                        android:text="实际:"
+                        android:textSize="10sp"
                         android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:id="@+id/actual_duration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
                         android:text="0min"
-                        android:textSize="12sp"
+                        android:textSize="10sp"
                         android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1" />
 
                 <!-- 截止日期 -->
                 <TextView
                     android:id="@+id/due_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="今天"
-                    android:textSize="12sp"
+                    android:textSize="10sp"
                     android:textColor="@color/text_secondary"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
             </LinearLayout>
 
@@ -165,7 +189,9 @@
                 android:id="@+id/status_buttons_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:paddingHorizontal="4dp"
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:visibility="gone">
@@ -174,17 +200,17 @@
                     android:id="@+id/btn_status_1"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="42dp"
+                    android:layout_height="36dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="6dp"
                     android:text="进行中"
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:fontFamily="sans-serif-medium"
                     android:backgroundTint="@color/primary_light"
                     android:textColor="@color/primary"
                     app:strokeColor="@color/primary"
-                    app:strokeWidth="1.5dp"
-                    app:cornerRadius="12dp"
+                    app:strokeWidth="1.2dp"
+                    app:cornerRadius="10dp"
                     android:elevation="2dp"
                     android:visibility="gone" />
 
@@ -192,65 +218,21 @@
                     android:id="@+id/btn_status_2"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="42dp"
+                    android:layout_height="36dp"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
                     android:text="完成"
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:fontFamily="sans-serif-medium"
                     android:backgroundTint="@color/secondary_light"
                     android:textColor="@color/secondary"
                     app:strokeColor="@color/secondary"
-                    app:strokeWidth="1.5dp"
-                    app:cornerRadius="12dp"
+                    app:strokeWidth="1.2dp"
+                    app:cornerRadius="10dp"
                     android:elevation="2dp"
                     android:visibility="gone" />
 
             </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- 右侧操作区域 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <!-- 拖拽手柄 -->
-            <ImageView
-                android:id="@+id/drag_handle"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginBottom="4dp"
-                android:src="@drawable/ic_drag_handle"
-                android:alpha="0.6"
-                android:contentDescription="拖拽排序" />
-
-            <!-- 优先级标签 -->
-            <TextView
-                android:id="@+id/priority_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="中"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:textColor="@color/priority_medium"
-                android:background="@drawable/rounded_priority_background"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="2dp" />
-
-            <!-- 编辑按钮 -->
-            <ImageButton
-                android:id="@+id/edit_button"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="4dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_edit"
-                android:alpha="0.7"
-                android:contentDescription="编辑事件" />
 
         </LinearLayout>
 

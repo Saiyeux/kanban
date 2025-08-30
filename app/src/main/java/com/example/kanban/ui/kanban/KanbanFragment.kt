@@ -65,8 +65,8 @@ class KanbanFragment : Fragment() {
     private lateinit var inProgressStatsContainer: View
     private lateinit var pendingStatsContainer: View
     
-    // Event filtering
-    private var currentFilter: EventStatus? = null
+    // Event filtering - support multiple selection
+    private val selectedFilters = mutableSetOf<EventStatus>()
     
     // 手势和动画
     private lateinit var gestureDetector: GestureDetectorCompat
@@ -119,48 +119,15 @@ class KanbanFragment : Fragment() {
         completedStatsContainer = view?.findViewById(R.id.completed_stats_container) ?: return
         inProgressStatsContainer = view?.findViewById(R.id.in_progress_stats_container) ?: return
         pendingStatsContainer = view?.findViewById(R.id.pending_stats_container) ?: return
+        deleteZone = view?.findViewById(R.id.delete_zone) ?: return
         
         // 计算侧边栏宽度（280dp转像素）
         val density = resources.displayMetrics.density
         sidebarWidth = (280 * density).toInt()
         
-        // 初始化删除区域
-        initDeleteZone()
-        
         setupGestureDetection()
     }
 
-    private fun initDeleteZone() {
-        // 创建删除区域视图
-        deleteZone = FrameLayout(requireContext()).apply {
-            setBackgroundColor("#B22222".toColorInt())
-            alpha = 0.8f
-            visibility = View.GONE
-            
-            // 添加删除区域的提示文本
-            val textView = TextView(context).apply {
-                text = "拖拽到此处删除"
-                setTextColor(android.graphics.Color.WHITE)
-                textSize = 16f
-                gravity = android.view.Gravity.CENTER
-                setTypeface(null, android.graphics.Typeface.BOLD)
-            }
-            
-            // 将文本视图添加到删除区域
-            addView(textView, FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            ))
-        }
-        
-        // 将删除区域添加到主容器
-        mainContainer.addView(deleteZone, FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            resources.getDimension(R.dimen.delete_zone_height).toInt()
-        ).apply {
-            gravity = android.view.Gravity.BOTTOM
-        })
-    }
 
     private fun setupGestureDetection() {
         gestureDetector = GestureDetectorCompat(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
@@ -226,8 +193,7 @@ class KanbanFragment : Fragment() {
                 showDeleteEventDialog(event)
             },
             onEventLongClick = { event ->
-                // 长按事件显示删除区域
-                showDeleteZone()
+                // 长按事件，可以添加其他功能
             },
             onEventStatusChange = { event, newStatus, timeSpent ->
                 val updatedEvent = event.copy(
@@ -305,20 +271,20 @@ class KanbanFragment : Fragment() {
         }
         
         // Setup statistics click listeners
-        totalStatsContainer.setOnClickListener {
-            setEventFilter(null)
-        }
+        // Total stats container is not clickable (default display)
+        totalStatsContainer.isClickable = false
+        totalStatsContainer.isFocusable = false
         
         completedStatsContainer.setOnClickListener {
-            setEventFilter(EventStatus.COMPLETED)
+            toggleEventFilter(EventStatus.COMPLETED)
         }
         
         inProgressStatsContainer.setOnClickListener {
-            setEventFilter(EventStatus.IN_PROGRESS)
+            toggleEventFilter(EventStatus.IN_PROGRESS)
         }
         
         pendingStatsContainer.setOnClickListener {
-            setEventFilter(EventStatus.PENDING)
+            toggleEventFilter(EventStatus.PENDING)
         }
     }
     
@@ -487,8 +453,12 @@ class KanbanFragment : Fragment() {
         updateFilterVisualFeedback()
     }
     
-    private fun setEventFilter(filter: EventStatus?) {
-        currentFilter = filter
+    private fun toggleEventFilter(status: EventStatus) {
+        if (selectedFilters.contains(status)) {
+            selectedFilters.remove(status)
+        } else {
+            selectedFilters.add(status)
+        }
         
         // Apply filter to current events
         val selectedTask = viewModel.selectedTask.value
@@ -500,21 +470,43 @@ class KanbanFragment : Fragment() {
         updateFilterVisualFeedback()
     }
     
+    private fun setEventFilter(filter: EventStatus?) {
+        // Keep for compatibility, but redirect to new logic
+        selectedFilters.clear()
+        filter?.let { selectedFilters.add(it) }
+        
+        val selectedTask = viewModel.selectedTask.value
+        selectedTask?.let { taskWithEvents ->
+            applyEventFilter(taskWithEvents.events)
+        }
+        
+        updateFilterVisualFeedback()
+    }
+    
     private fun applyEventFilter(events: List<Event>) {
-        val filteredEvents = if (currentFilter == null) {
+        val isFilterActive = selectedFilters.isNotEmpty()
+        eventAdapter.setFilterActive(isFilterActive)
+        
+        val filteredEvents = if (selectedFilters.isEmpty()) {
+            // Show all events when no filter is selected (default)
             events
         } else {
-            events.filter { it.status == currentFilter }
+            // Show events that match any of the selected filters, maintain original order
+            events.filter { event ->
+                selectedFilters.contains(event.status)
+            }
         }
         eventAdapter.submitList(filteredEvents)
     }
     
     private fun updateFilterVisualFeedback() {
-        // Reset all containers to normal state
-        totalStatsContainer.alpha = if (currentFilter == null) 1.0f else 0.6f
-        completedStatsContainer.alpha = if (currentFilter == EventStatus.COMPLETED) 1.0f else 0.6f
-        inProgressStatsContainer.alpha = if (currentFilter == EventStatus.IN_PROGRESS) 1.0f else 0.6f
-        pendingStatsContainer.alpha = if (currentFilter == EventStatus.PENDING) 1.0f else 0.6f
+        // Total stats container is always visible (not interactive)
+        totalStatsContainer.alpha = if (selectedFilters.isEmpty()) 1.0f else 0.7f
+        
+        // Update visual feedback based on selected filters
+        completedStatsContainer.alpha = if (selectedFilters.contains(EventStatus.COMPLETED)) 1.0f else 0.6f
+        inProgressStatsContainer.alpha = if (selectedFilters.contains(EventStatus.IN_PROGRESS)) 1.0f else 0.6f
+        pendingStatsContainer.alpha = if (selectedFilters.contains(EventStatus.PENDING)) 1.0f else 0.6f
     }
 
     private fun showCreateTaskDialog(existingTask: Task? = null) {

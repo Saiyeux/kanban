@@ -27,6 +27,15 @@ class EventAdapter(
 ) : ListAdapter<Event, EventAdapter.EventViewHolder>(EventDiffCallback()) {
     
     private var expandedEventId: Long = -1
+    private var isFilterActive: Boolean = false
+    
+    fun setFilterActive(active: Boolean) {
+        isFilterActive = active
+        if (active) {
+            expandedEventId = -1 // Collapse all events when filter is active
+            notifyDataSetChanged()
+        }
+    }
 
     // 拖拽相关方法
     fun moveItem(fromPosition: Int, toPosition: Int) {
@@ -51,7 +60,7 @@ class EventAdapter(
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = getItem(position)
         val isExpanded = expandedEventId == event.id
-        holder.bind(event, isExpanded) { eventId ->
+        holder.bind(event, isExpanded, isFilterActive) { eventId ->
             expandedEventId = if (expandedEventId == eventId) -1 else eventId
             notifyDataSetChanged()
         }
@@ -76,13 +85,15 @@ class EventAdapter(
         private val actualDurationText: TextView = itemView.findViewById(R.id.actual_duration)
         private val dueDateText: TextView = itemView.findViewById(R.id.due_date)
         private val priorityText: TextView = itemView.findViewById(R.id.priority_text)
-        private val dragHandle: View = itemView.findViewById(R.id.drag_handle)
         private val editButton: View = itemView.findViewById(R.id.edit_button)
         private val statusButtonsContainer: View = itemView.findViewById(R.id.status_buttons_container)
         private val btnStatus1: View = itemView.findViewById(R.id.btn_status_1)
         private val btnStatus2: View = itemView.findViewById(R.id.btn_status_2)
 
-        fun bind(event: Event, isExpanded: Boolean, onToggleExpand: (Long) -> Unit) {
+        fun bind(event: Event, isExpanded: Boolean, filterActive: Boolean, onToggleExpand: (Long) -> Unit) {
+            // 重置itemView状态，防止recyclerView重用时的状态问题
+            resetItemViewState()
+            
             titleText.text = event.title
             
             // 显示或隐藏描述
@@ -105,7 +116,7 @@ class EventAdapter(
             // 设置截止日期
             setDueDate(event.dueDate)
 
-            // 点击事件 - 切换展开/收起状态按钮
+            // 点击事件 - 切换展开/收起状态按钮（仅在非筛选状态下）
             itemView.setOnClickListener {
                 // 添加点击反馈动画
                 itemView.animate()
@@ -120,11 +131,17 @@ class EventAdapter(
                             .start()
                     }
                     .start()
-                onToggleExpand(event.id)
+                
+                // Only allow expansion when no filter is active
+                if (!filterActive) {
+                    onToggleExpand(event.id)
+                }
             }
             
             // 长按事件 - 显示删除区域
             itemView.setOnLongClickListener {
+                // 确保itemView状态正常
+                resetItemViewState()
                 onEventLongClick(event)
                 true
             }
@@ -138,14 +155,28 @@ class EventAdapter(
             }
         }
         
+        private fun resetItemViewState() {
+            // 重置itemView到正常状态，修复长按后的视觉bug
+            // 保持MaterialCardView的elevation不变，只重置其他属性
+            itemView.apply {
+                scaleX = 1.0f
+                scaleY = 1.0f
+                alpha = 1.0f
+                translationX = 0f
+                translationY = 0f
+            }
+        }
+        
         private fun setupStatusButtons(event: Event, isExpanded: Boolean) {
             if (isExpanded) {
                 statusButtonsContainer.visibility = View.VISIBLE
-                // 添加展开动画
+                // 添加展开动画和缩放效果
                 statusButtonsContainer.alpha = 0f
+                statusButtonsContainer.scaleY = 0.8f
                 statusButtonsContainer.animate()
                     .alpha(1f)
-                    .setDuration(200)
+                    .scaleY(1f)
+                    .setDuration(250)
                     .start()
                 
                 // 根据当前状态设置可用按钮
@@ -179,12 +210,14 @@ class EventAdapter(
                 }
             } else {
                 if (statusButtonsContainer.visibility == View.VISIBLE) {
-                    // 添加收起动画
+                    // 添加收起动画和缩放效果
                     statusButtonsContainer.animate()
                         .alpha(0f)
-                        .setDuration(150)
+                        .scaleY(0.8f)
+                        .setDuration(200)
                         .withEndAction {
                             statusButtonsContainer.visibility = View.GONE
+                            statusButtonsContainer.scaleY = 1f // 重置缩放
                         }
                         .start()
                 } else {
@@ -284,7 +317,7 @@ class EventAdapter(
         private fun setDueDate(dueDate: LocalDateTime?) {
             if (dueDate != null) {
                 val formatter = DateTimeFormatter.ofPattern("MM-dd")
-                dueDateText.text = dueDate.format(formatter)
+                dueDateText.text = "截止:${dueDate.format(formatter)}"
                 dueDateText.visibility = View.VISIBLE
 
                 // 检查是否过期

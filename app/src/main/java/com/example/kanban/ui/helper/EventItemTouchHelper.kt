@@ -55,6 +55,12 @@ class EventItemTouchHelper(
                 // 记录被拖拽的item位置
                 draggedPosition = viewHolder?.adapterPosition ?: -1
                 shouldDelete = false
+                // 拖拽开始时显示删除区域
+                onDeleteZoneEntered()
+            }
+            ItemTouchHelper.ACTION_STATE_IDLE -> {
+                // 拖拽结束时确保隐藏删除区域
+                onDeleteZoneExited()
             }
         }
     }
@@ -62,12 +68,13 @@ class EventItemTouchHelper(
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
         
-        // 恢复原始状态
+        // 恢复原始状态，但保持MaterialCardView的elevation
         viewHolder.itemView.apply {
-            elevation = 0f
             scaleX = 1.0f
             scaleY = 1.0f
             alpha = 1.0f
+            translationX = 0f
+            translationY = 0f
         }
         
         // 如果在删除区域释放，则删除项目
@@ -75,13 +82,11 @@ class EventItemTouchHelper(
             onItemDeleted(draggedPosition)
         }
         
-        // 重置删除区域状态
-        if (isOverDeleteZone) {
-            isOverDeleteZone = false
-            onDeleteZoneExited()
-        }
+        // 拖拽结束时总是隐藏删除区域
+        onDeleteZoneExited()
         
-        // 重置拖拽位置和删除标志
+        // 重置所有状态
+        isOverDeleteZone = false
         draggedPosition = -1
         shouldDelete = false
     }
@@ -104,14 +109,23 @@ class EventItemTouchHelper(
     }
     
     private fun checkDeleteZone(itemView: View, recyclerView: RecyclerView) {
-        // 获取删除区域的位置（假设在recyclerView的底部）
-        val deleteZoneTop = recyclerView.height - 80 // 80dp is delete zone height
+        // 获取父容器的坐标
+        val parent = recyclerView.parent as? View ?: return
         
-        // 获取itemView的底部位置
-        val itemBottom = itemView.y + itemView.height
+        // 计算删除区域在父容器中的位置（底部80dp高度区域）
+        val deleteZoneTop = parent.height - 80 * parent.context.resources.displayMetrics.density
+        
+        // 获取itemView在父容器中的全局坐标
+        val location = IntArray(2)
+        itemView.getLocationInWindow(location)
+        val parentLocation = IntArray(2)
+        parent.getLocationInWindow(parentLocation)
+        
+        // 计算itemView相对于父容器的bottom位置
+        val itemBottomInParent = location[1] - parentLocation[1] + itemView.height
         
         // 检查是否进入删除区域
-        val isNowOverDeleteZone = itemBottom > deleteZoneTop
+        val isNowOverDeleteZone = itemBottomInParent > deleteZoneTop
         
         if (isNowOverDeleteZone && !isOverDeleteZone) {
             // 进入删除区域
